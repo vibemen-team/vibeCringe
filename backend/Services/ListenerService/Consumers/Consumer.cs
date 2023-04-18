@@ -35,7 +35,7 @@ namespace ListenerService.Consumers
                 {
                     var response = consumer.Consume(TimeSpan.FromSeconds(1));
                     if (response is not null)
-                        if (response.Message is not null)
+                        if (response.Message is not null && (response.Message.Value != string.Empty))
                         {
                             //_logger.LogInformation(response.Message.Value);
                             _listenerHub.Send(response.Message.Value);

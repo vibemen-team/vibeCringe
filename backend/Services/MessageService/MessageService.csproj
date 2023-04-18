@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Kafka\Kafka.csproj" />
-    <ProjectReference Include="..\Shared\SignalR\SignalR.csproj" />
+    <ProjectReference Include="..\..\Shared\Kafka\Kafka.csproj" />
+    <ProjectReference Include="..\..\Shared\SignalR\SignalR.csproj" />
   </ItemGroup>
 
 </Project>

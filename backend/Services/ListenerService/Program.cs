@@ -14,7 +14,7 @@ builder.Services.AddSingleton<ListenerHub>();
 
 
 builder.Services.AddSignalR(hubOption => hubOption.MaximumReceiveMessageSize = 100_100);
-//builder.Services.AddHostedService<Consumer>();
+builder.Services.AddHostedService<Consumer>();
 
 var app = builder.Build();
 
