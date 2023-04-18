@@ -1,0 +1,14 @@
+.bar{
+    background-color: #40444B;
+    border-radius: 10px;
+    width:90%;
+    
+}
+.btn{
+width:10%;
+border-radius: 10px;
+}
+.group{
+    display: flex;
+    align-self:flex-start;
+}

@@ -1,0 +1,8 @@
+.wrapper{
+    background-color: #37393F;
+    height:100vh;
+    width: inherit;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }

@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  messageservice:
+    image: ${DOCKER_REGISTRY-}messageservice
+    build:
+      context: .
+      dockerfile: MessageService/Dockerfile
+
+  listenerservice:
+    image: ${DOCKER_REGISTRY-}listenerservice
+    build:
+      context: .
+      dockerfile: Services/ListenerService/Dockerfile
+
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
+
