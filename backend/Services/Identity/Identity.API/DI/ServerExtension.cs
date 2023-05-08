@@ -1,11 +1,12 @@
-﻿using Identity.Application.IdentityServerConfig;
+﻿
+using Identity.Application.IdentityServer;
+using Identity.Domain.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-namespace Identity.API.DI
+namespace Identity.WebApi.DI
 {
     public static class ServerExtension
     {
@@ -48,13 +49,13 @@ namespace Identity.API.DI
         public static IServiceCollection ConfigureIdentity(this IServiceCollection services)
         {
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
-            {
-                config.User.RequireUniqueEmail = false;
-                config.Password.RequiredLength = 6;
-                config.Password.RequireDigit = false;
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequireUppercase = false;
-            })
+                {
+                    config.User.RequireUniqueEmail = false;
+                    config.Password.RequiredLength = 6;
+                    config.Password.RequireDigit = false;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders()
                 .AddClaimsPrincipalFactory<Claims>();
@@ -65,7 +66,7 @@ namespace Identity.API.DI
         public static IServiceCollection ConfigureIdentityServer(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddIdentityServer()
+            services.AddIdentityServer(x=>x.IssuerUri= configuration["IDENTITY_ISSUER"])
                     .AddAspNetIdentity<IdentityUser>()
                     .AddConfigurationStore(options =>
                     {
@@ -98,7 +99,7 @@ namespace Identity.API.DI
         {
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new OpenApiInfo { });
+                opt.SwaggerDoc("v1", new OpenApiInfo { });  
                 opt.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.OAuth2,

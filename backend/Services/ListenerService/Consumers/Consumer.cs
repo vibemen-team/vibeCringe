@@ -3,7 +3,6 @@ using SignalR;
 
 namespace ListenerService.Consumers
 {
-
     public class Consumer : BackgroundService
     {
         private readonly ILogger<Consumer> _logger;
@@ -19,8 +18,8 @@ namespace ListenerService.Consumers
             return Task.Run(() =>
             {
                 var configProducer = new ProducerConfig { BootstrapServers = "kafka:9092" };
-                using var producer = new ProducerBuilder<Null, string>(configProducer).Build();
-                producer.Produce("test-topic", new Message<Null, string> { Value = "" });
+                using var producer = new ProducerBuilder<string, string>(configProducer).Build();
+                producer.Produce("test-topic", new Message<string, string> { Value = "" });
 
                 var config = new ConsumerConfig
                 {
@@ -29,7 +28,7 @@ namespace ListenerService.Consumers
                     AutoOffsetReset = AutoOffsetReset.Earliest,
                     AllowAutoCreateTopics = true
                 };
-                using var consumer = new ConsumerBuilder<Null, string>(config).Build();
+                using var consumer = new ConsumerBuilder<string, string>(config).Build();
                 consumer.Subscribe("test-topic");
                 while (true)
                 {
@@ -38,7 +37,7 @@ namespace ListenerService.Consumers
                         if (response.Message is not null && (response.Message.Value != string.Empty))
                         {
                             //_logger.LogInformation(response.Message.Value);
-                            _listenerHub.Send(response.Message.Value);
+                            _listenerHub.Send(response.Message);
                         }
                 }
             });

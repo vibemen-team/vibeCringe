@@ -14,12 +14,30 @@ import * as signalR from '@microsoft/signalr';
 })
 export class UserMenuInfoComponent {
   async start() {
-    let audio = new Audio();
-    audio.preload = 'auto';
-    audio.autoplay = true;
-    audio.play();
+    let token = localStorage.getItem('token');
+    console.log(token);
+    // console.log(token);
+    // let audio = new Audio();
+    // audio.preload = 'auto';
+    // audio.autoplay = true;
+    // audio.play();
+    const connectionListener = new signalR.HubConnectionBuilder()
+      // DOCKER URL 'https://localhost:7001/streamHub'
+      // LOCAL URL 'https://localhost:7047/streamHub'
+      .withUrl('https://localhost:9001/listener')
+      .build();
+    await connectionListener.start();
+    connectionListener.on('send', (data) => {
+      console.log(token);
+      console.dir(data);
+    });
+
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7001/streamHub')
+      // DOCKER URL 'https://localhost:7001/streamHub'
+      // LOCAL URL 'https://localhost:7047/streamHub'
+      .withUrl('https://localhost:7001/streamHub', {
+        accessTokenFactory: () => token as string,
+      })
       .build();
     await connection.start();
     const subject = new signalR.Subject();
@@ -37,8 +55,8 @@ export class UserMenuInfoComponent {
       timeSlice: 1000,
       ondataavailable: async (blob) => {
         //PASTE CODE HERE
-        console.log('Slice sended');
-        console.log(blob);
+        // console.log('Slice sended');
+        // console.log(blob);
 
         var reader = new FileReader();
         reader.readAsDataURL(blob);

@@ -1,14 +1,13 @@
-.bar{
-    background-color: #40444B;
-    border-radius: 10px;
-    width:90%;
-    
+.bar {
+  background-color: #40444b;
+  border-radius: 10px;
+  width: 90%;
 }
-.btn{
-width:10%;
-border-radius: 10px;
+.btn {
+  width: 10%;
+  border-radius: 10px;
 }
-.group{
-    display: flex;
-    align-self:flex-start;
+.group {
+  display: flex;
+  align-self: flex-start;
 }

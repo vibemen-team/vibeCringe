@@ -5,6 +5,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - AUTH_URL=http://identity.api:80
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Identity;User=sa;Password=1Secure*Password1;
     ports:
       - "7000:80"
       - "7001:443"
@@ -13,6 +15,8 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - music
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.0
     hostname: zookeeper
@@ -20,6 +24,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - music
 
   kafka:
     image: confluentinc/cp-kafka:7.0.0
@@ -36,7 +42,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-  
+    networks:
+      - music
 
   akhq:
     # build:
@@ -58,6 +65,8 @@ services:
       - 8080:8080
     links:
       - kafka
+    networks:
+      - music
   
   listenerservice:
     environment:
@@ -69,3 +78,45 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - music
+
+  identity.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - IDENTITY_ISSUER="http://10.0.75.1:1000"
+      - AUTH_URL=http://identity.api:80
+      - SWAGGER_URL=http://localhost:10000
+      - ConnectionStrings__DefaultConnection=Server=db;Database=Identity;User=sa;Password=1Secure*Password1;
+    ports:
+      - "10000:80"
+      - "10001:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - db
+    networks:
+      - music
+
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    container_name: db
+    ports:
+      - 1433:1433
+    volumes:
+      - db-data:/var/lib/sqlserver/data
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=1Secure*Password1
+    networks:
+      - music
+
+networks:
+   music:
+     driver: bridge
+
+volumes:
+ db-data:
+  external: false

@@ -2,6 +2,12 @@ using Confluent.Kafka;
 using Kafka.Producers;
 using MessageService;
 using SignalR;
+using Auth;
+using Microsoft.AspNetCore.SignalR;
+using Message.Infrastructure.Repositories;
+using Identity.Domain.Data;
+using Microsoft.EntityFrameworkCore;
+using Message.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +15,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddBearerAuth(builder.Configuration["AUTH_URL"]);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IKafkaProducer<Null, string>, SimpleStringProducer>();
-builder.Services.AddSingleton<StreamHub>();
+builder.Services.AddDbContext<IdentityDbContext>(opts =>
+                opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), b =>
+                    b.MigrationsAssembly(typeof(IdentityDbContext).Assembly.GetName().Name))); ;
+
+builder.Services.AddSingleton<IKafkaProducer<string, string>, SimpleStringProducer>();
+builder.Services.AddScoped<StreamHub>();
+builder.Services.AddScoped<BaseRepository>();
+builder.Services.AddScoped<BaseService>();
+builder.Services.AddScoped<ChatHub>();
 
 //builder.Services.AddHostedService<MyConsumer>();
 builder.Services.AddSignalR(hubOption=>hubOption.MaximumReceiveMessageSize=100_100);
@@ -37,6 +52,7 @@ app.UseCors(x =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

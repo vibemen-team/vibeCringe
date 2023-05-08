@@ -13,4 +13,9 @@ services:
       context: .
       dockerfile: Services/ListenerService/Dockerfile
 
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/Identity.API/Dockerfile
 

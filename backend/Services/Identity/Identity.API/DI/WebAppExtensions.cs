@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using Identity.Application.IdentityServerConfig;
+using Identity.Application.IdentityServer;
+using Identity.Domain.Data;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Identity.API.DI
+namespace Identity.WebApi.DI
 {
     public static class WebAppExtensions
     {
@@ -54,7 +54,7 @@ namespace Identity.API.DI
             {
                 var isNotExist = !all.Any(e => equals(e, item));
                 if (isNotExist) await entities.AddAsync(mapper.Map<TEntity>(item));
-            }
+            }    
         }
     }
 }

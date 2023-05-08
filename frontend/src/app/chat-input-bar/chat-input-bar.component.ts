@@ -25,12 +25,18 @@ export class ChatInputBarComponent {
   }
 
   async sendMessage(): Promise<void> {
+    let token = localStorage.getItem('token');
+
     this.mesgServ.addMessage(1, this.messageText);
-    this.messageText = '';
+    //this.messageText = '';
+
     const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7047/chat')
+      .withUrl('https://localhost:7047/chat', {
+        accessTokenFactory: () => token as string,
+      })
       .build();
     await hubConnection.start();
     hubConnection.invoke('Send', this.messageText);
+    //await hubConnection.stop();
   }
 }

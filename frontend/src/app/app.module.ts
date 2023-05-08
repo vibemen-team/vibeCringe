@@ -9,6 +9,11 @@ import { ChatInputBarComponent } from './chat-input-bar/chat-input-bar.component
 import { ChatHistoryComponent } from './chat-history/chat-history.component';
 import { UserMenuWrapperComponent } from './user-menu-wrapper/user-menu-wrapper.component';
 import { UserMenuInfoComponent } from './user-menu-info/user-menu-info.component';
+import { AuthorizeFormComponent } from './authorize-form/authorize-form.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -17,14 +22,17 @@ import { UserMenuInfoComponent } from './user-menu-info/user-menu-info.component
     ChatInputBarComponent,
     ChatHistoryComponent,
     UserMenuWrapperComponent,
-    UserMenuInfoComponent
+    UserMenuInfoComponent,
+    AuthorizeFormComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [HttpClient],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

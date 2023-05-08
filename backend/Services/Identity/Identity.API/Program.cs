@@ -1,31 +1,30 @@
 using Auth;
-using Identity.API.DI;
 using Identity.Application.DI;
+using Identity.WebApi.DI;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-builder.Services.ConfigureSqlServerContext(builder.Configuration)
+builder.Services.ConfigureCors()
+    .ConfigureSqlServerContext(builder.Configuration)
     .ConfigureIdentity()
     .ConfigureIdentityServer(builder.Configuration);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.ConfigureApi()
     .AddEndpointsApiExplorer();
 
 builder.Services.AddControllers()
     .AddApplication();
 
-builder.Services.AddBearerAuth("https://localhost:7068");
-builder.Services.AddSwaggerGen("https://localhost:7068");
+builder.Services.AddBearerAuth(builder.Configuration["AUTH_URL"]);
+
+//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(builder.Configuration["SWAGGER_URL"]);
 
 var app = await builder.Build()
     .MigrateDatabaseAsync();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
