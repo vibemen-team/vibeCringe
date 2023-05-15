@@ -1,18 +1,13 @@
 ﻿using Identity.Domain.Data.Entities;
 using Message.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Message.Infrastructure.Services
 {
     public class BaseService
     {
-        private readonly BaseRepository _repository;
+        private readonly MessageRepository _repository;
 
-        public BaseService(BaseRepository repository)
+        public BaseService(MessageRepository repository)
         {
             _repository = repository;
         }

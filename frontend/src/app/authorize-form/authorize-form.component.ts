@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-authorize-form',
@@ -7,10 +8,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./authorize-form.component.css'],
 })
 export class AuthorizeFormComponent {
-  constructor(private http: HttpClient) {}
-
   login: string = '';
   password: string = '';
+  public authService: AuthService;
+
+  constructor(private http: HttpClient, authService: AuthService) {
+    this.authService = authService;
+  }
   log() {
     let body = new URLSearchParams();
     body.set('username', this.login);
@@ -32,14 +36,19 @@ export class AuthorizeFormComponent {
       .post('http://localhost:10000/connect/token', body.toString(), options)
       .subscribe((response) => {
         obj = response as TokenResponse;
-        // console.dir(response);
-        // console.dir(obj);
-        localStorage.setItem('token', obj.access_token as string);
+        //localStorage.setItem('token', obj.access_token as string);
         console.log('Done');
-        // const headers = { Authorization: 'Bearer ' + obj.access_token };
-        // fetch('https://localhost:7068/Test/ClosedRoute', { headers }).then(
-        //   (resp) => console.log(resp)
-        // );
+        this.authService.setToken(obj.access_token as string);
+        console.log(this.authService.isLogin);
+
+        this.http
+          .get('https://localhost:10001/Test/ClosedRoute', {
+            headers: { Authorization: 'Bearer ' + this.authService.token },
+            responseType: 'text',
+          })
+          .subscribe((response) => {
+            this.authService.userId = response;
+          });
       });
   }
 }

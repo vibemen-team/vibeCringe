@@ -12,9 +12,9 @@ namespace SignalR
     public class StreamHub : Hub
     {
         private readonly IKafkaProducer<string, string> _producer;
-        private readonly BaseRepository _repository;
+        private readonly MessageRepository _repository;
 
-        public StreamHub(IKafkaProducer<string, string> producer, BaseRepository repository)
+        public StreamHub(IKafkaProducer<string, string> producer, MessageRepository repository)
         {
             _producer = producer;
             _repository = repository;

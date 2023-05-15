@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as RecordRTC from 'recordrtc';
 import {
   RecordRTCPromisesHandler,
@@ -6,42 +6,54 @@ import {
   invokeSaveAsDialog,
 } from 'recordrtc';
 import * as signalR from '@microsoft/signalr';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-user-menu-info',
   templateUrl: './user-menu-info.component.html',
   styleUrls: ['./user-menu-info.component.css'],
 })
-export class UserMenuInfoComponent {
-  async start() {
-    let token = localStorage.getItem('token');
-    console.log(token);
-    // console.log(token);
-    // let audio = new Audio();
-    // audio.preload = 'auto';
-    // audio.autoplay = true;
-    // audio.play();
-    const connectionListener = new signalR.HubConnectionBuilder()
-      // DOCKER URL 'https://localhost:7001/streamHub'
-      // LOCAL URL 'https://localhost:7047/streamHub'
+export class UserMenuInfoComponent implements OnInit {
+  public authService: AuthService;
+
+  connectionListener!: signalR.HubConnection;
+  connection!: signalR.HubConnection;
+
+  constructor(authService: AuthService) {
+    this.authService = authService;
+  }
+  async ngOnInit(): Promise<void> {
+    let audio = new Audio();
+    audio.preload = 'auto';
+    audio.autoplay = true;
+    audio.play();
+
+    this.connectionListener = new signalR.HubConnectionBuilder()
+      // DOCKER URL 'https://localhost:9001/listener'
+      // LOCAL URL 'https://localhost:7047/listener'
       .withUrl('https://localhost:9001/listener')
       .build();
-    await connectionListener.start();
-    connectionListener.on('send', (data) => {
-      console.log(token);
-      console.dir(data);
+    await this.connectionListener.start();
+    this.connectionListener.on('send', (data) => {
+      let msg = data as VoiceMessage;
+      if (msg.key === this.authService.userId) audio.src = msg.value;
     });
+  }
+  async start() {
+    //let token = localStorage.getItem('token');
 
-    const connection = new signalR.HubConnectionBuilder()
+    // console.log(token);
+
+    this.connection = new signalR.HubConnectionBuilder()
       // DOCKER URL 'https://localhost:7001/streamHub'
       // LOCAL URL 'https://localhost:7047/streamHub'
       .withUrl('https://localhost:7001/streamHub', {
-        accessTokenFactory: () => token as string,
+        accessTokenFactory: () => this.authService.token,
       })
       .build();
-    await connection.start();
+    await this.connection.start();
     const subject = new signalR.Subject();
-    connection.send('UploadStream', subject);
+    this.connection.send('UploadStream', subject);
 
     let stream = await navigator.mediaDevices.getUserMedia({
       video: false,
@@ -93,4 +105,9 @@ export class UserMenuInfoComponent {
       }
     }, 500);
   }
+}
+
+export class VoiceMessage {
+  key!: string;
+  value!: string;
 }

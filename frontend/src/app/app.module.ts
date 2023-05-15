@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
+import { MessageItemComponent } from './message-item/message-item.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { HttpClient } from '@angular/common/http';
     UserMenuWrapperComponent,
     UserMenuInfoComponent,
     AuthorizeFormComponent,
+    MessageItemComponent,
   ],
   imports: [
     BrowserModule,

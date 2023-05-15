@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Message.Infrastructure.Repositories
 {
-    public class BaseRepository : IBaseRepository<ChatMessage>
+    public class MessageRepository : IBaseRepository<ChatMessage>
     {
         private readonly IdentityDbContext _dbContext;
 
-        public BaseRepository(IdentityDbContext dbContext)
+        public MessageRepository(IdentityDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -26,7 +26,9 @@ namespace Message.Infrastructure.Repositories
 
         public Task<List<ChatMessage>> GetAllAsync()
         {
-            var items = _dbContext.ChatMessages.ToListAsync();
+            var items = _dbContext.ChatMessages.Include(x=>x.Sender)
+                .Include(x=>x.Receiver)
+                .ToListAsync();
             return items;
         }
 

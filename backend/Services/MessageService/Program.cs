@@ -8,6 +8,7 @@ using Message.Infrastructure.Repositories;
 using Identity.Domain.Data;
 using Microsoft.EntityFrameworkCore;
 using Message.Infrastructure.Services;
+using Message.Infrastructure.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +27,10 @@ builder.Services.AddDbContext<IdentityDbContext>(opts =>
 
 builder.Services.AddSingleton<IKafkaProducer<string, string>, SimpleStringProducer>();
 builder.Services.AddScoped<StreamHub>();
-builder.Services.AddScoped<BaseRepository>();
+builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<BaseService>();
 builder.Services.AddScoped<ChatHub>();
+builder.Services.AddAutoMapper(typeof(MessageMapProfile));
 
 //builder.Services.AddHostedService<MyConsumer>();
 builder.Services.AddSignalR(hubOption=>hubOption.MaximumReceiveMessageSize=100_100);

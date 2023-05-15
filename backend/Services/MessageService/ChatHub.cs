@@ -1,5 +1,4 @@
-﻿using Identity.Domain.Data.Entities;
-using Message.Infrastructure.Repositories;
+﻿using Message.Infrastructure;
 using Message.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -23,7 +22,12 @@ namespace MessageService
 
             await _service.SendMessage(userID, message);
 
-            // await this.Clients.All.SendAsync("Send", message);
+            var item = new MessageModel
+            {
+                SenderId = userID,
+                MessageText = message
+            };
+            await this.Clients.All.SendAsync("Send", item);
         }
     }
 }
