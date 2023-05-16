@@ -4,6 +4,7 @@ using Message.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace SignalR
@@ -76,6 +77,22 @@ namespace SignalR
                     var receiverID = await _repository.GetAnotherUserAsync(userID);
                     _producer.ProduceAsync(receiverID,item);
                 }
+            }
+        }
+        public struct VideoData
+        {
+            public int Index { get; }
+            public string Part { get; }
+
+
+            [JsonConstructor]
+            public VideoData(int index, string part) => (Index, Part) = (index, part);
+        }
+        public async Task SendVideoData(IAsyncEnumerable<VideoData> videoData)
+        {
+            await foreach (var d in videoData)
+            {
+                await Clients.Others.SendAsync("video-data", d);
             }
         }
 

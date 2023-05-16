@@ -45,6 +45,8 @@ namespace MessageService.Controllers
                 if (item.SenderId.Equals(userID))
                 {
                     item.isMine=true;
+                    //item.SendedTime = DateTime.ParseExact(item.SendedTime.ToShortTimeString()+ item.SendedTime.ToShortTimeString(), "yyyy-MM-dd HH:mm:ss,fff",
+                    //                   System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
             return Ok(items);

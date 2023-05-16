@@ -1,8 +1,14 @@
-.wrapper{
-    background-color: #37393F;
-    height:100vh;
-    width: inherit;
-    display:flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+.wrapper {
+  background-color: #37393f;
+  height: 100vh;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  max-height: 100vh;
+}
+.history {
+  overflow: hidden;
+  height: auto;
+}

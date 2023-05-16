@@ -11,3 +11,12 @@
   display: flex;
   align-self: flex-start;
 }
+.button-small {
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+}

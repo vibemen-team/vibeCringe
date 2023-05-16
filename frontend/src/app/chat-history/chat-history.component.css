@@ -1,5 +1,16 @@
-.message{
- color:whitesmoke;
- font-family: "Roboto";
- font-size: 15px;
+.message {
+  color: whitesmoke;
+  font-family: "Roboto";
+  font-size: 15px;
+}
+.list-group {
+  height: 95vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 10px 5px 10px 20px;
+}
+.history-item {
+  width: 100%;
+  white-space: break-spaces;
 }

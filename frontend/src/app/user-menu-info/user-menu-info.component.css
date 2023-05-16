@@ -1,4 +1,16 @@
-.info{
-    background-color: #292B2F;
-    height: 52px;
+.info {
+  background-color: #292b2f;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.button-small {
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
 }
