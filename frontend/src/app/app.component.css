@@ -1,8 +1,12 @@
-.mroot{
-  display: flex;  
+.startDiv {
+  display: flex;
   width: 100vw;
   height: 100vh;
 }
-.chat{
+.chat {
   width: 100%;
+  overflow: hidden;
+}
+.main {
+  height: 100vh;
 }

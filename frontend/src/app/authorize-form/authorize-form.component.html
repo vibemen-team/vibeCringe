@@ -1,0 +1,25 @@
+<div class="formWrapper">
+    <form class="loginForm">
+        <!-- Email input -->
+        <div class="form-control">
+            <label class="form-label" for="form2Example1">Login</label>
+            <input [(ngModel)]="login" class="form-input" [ngModelOptions]="{standalone: true}" type="text"
+                id="form2Example1" />
+        </div>
+
+        <!-- Password input -->
+        <div class="form-control">
+            <label class="form-label" for="form2Example2">Password</label>
+            <input type="password" class="form-input" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"
+                id="form2Example2" />
+        </div>
+
+        <!-- Submit button -->
+        <div class="buttons">
+            <button type="button" class="btn btn-primary btn-block mb-4 form-btn" (click)="log()">Register</button>
+            <button type="button" class="btn btn-primary btn-block mb-4 form-btn" (click)="log()">Sign in</button>
+        </div>
+
+
+    </form>
+</div>

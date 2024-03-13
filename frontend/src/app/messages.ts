@@ -1,47 +1,53 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export class Message {
-    id: number;
-    text: string;
+  id: string;
+  messageText: string;
+  isMine!: boolean;
+  receiverId!: string;
+  receiverName!: string;
+  sendedTime!: string;
+  senderId!: string;
+  senderName!: string;
 
-    constructor(id:number,text:string) {
-      this.id=id;
-      this.text=text;   
-    }
-
+  constructor(senderId: string, messageText: string) {
+    this.id = '';
+    this.messageText = messageText;
+    this.isMine = false;
+    this.receiverId = '';
+    this.receiverName = '';
+    this.sendedTime = '';
+    this.senderId = senderId;
+    this.senderName = '';
   }
-  
-  @Injectable()
-  export class MessageService {
-    messages = messages;
+}
 
-    private product$ = new BehaviorSubject<any>({});
-    selectedProduct$ = this.product$.asObservable();
-   
-    constructor() {}
-    
-    addMessage(id:number,text:string):void{
-      this.messages.push(new Message(id,text));
-    }
+@Injectable()
+export class MessageService {
+  messages: Message[] = messages;
 
-    setProduct(product: any) {
-      this.product$.next(product);
-    }
+  constructor() {}
+
+  addMessage(message: Message): void {
+    console.dir(this.messages);
+    this.messages.push(message);
   }
+}
 
-
-  export const messages: Message[] = [
-    {
-      id: 1,
-      text: 'Message 1'
-    },
-    {
-      id: 1,
-      text: 'Message 2'
-    },
-    {
-      id: 2,
-      text: 'Message 3'
-    }
-  ];
+export const messages: Message[] = [
+  // {
+  //   id: 1,
+  //   text: 'Message 1',
+  // },
+  // {
+  //   id: 1,
+  //   text: 'Message 2',
+  // },
+  // {
+  //   id: 2,
+  //   text: 'Message 3',
+  // },
+];

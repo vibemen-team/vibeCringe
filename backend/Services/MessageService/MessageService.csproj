@@ -16,8 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Auth\Auth.csproj" />
     <ProjectReference Include="..\..\Shared\Kafka\Kafka.csproj" />
     <ProjectReference Include="..\..\Shared\SignalR\SignalR.csproj" />
+    <ProjectReference Include="..\Message\Message.Infrastructure\Message.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

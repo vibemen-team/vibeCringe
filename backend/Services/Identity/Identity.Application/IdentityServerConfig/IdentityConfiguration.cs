@@ -1,9 +1,9 @@
 ﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
-using static IdentityModel.OidcConstants;
-using GrantTypes = IdentityServer4.Models.GrantTypes;
+using static IdentityServer4.IdentityServerConstants;
 
-namespace Identity.Application.IdentityServerConfig
+namespace Identity.Application.IdentityServer
 {
     public static class IdentityConfiguration
     {
@@ -35,16 +35,16 @@ namespace Identity.Application.IdentityServerConfig
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new("SwaggerScope"),
-                new("MessageScope"),
-                new("ListenerScope")
+                new("SwaggerAPI"),
+                new("BasketApi"),
+                new("CatalogApi")
             };
 
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
                 new("SwaggerAPI"),
-                new("MessageAPI", new[]
+                new("BasketAPI", new[]
                 {
                     JwtClaimTypes.Id,
                     JwtClaimTypes.Role
@@ -52,14 +52,14 @@ namespace Identity.Application.IdentityServerConfig
                 {
                     Scopes = new List<string>
                     {
-                        "MessageScope"
+                        "BasketApi"
                     },
                     ApiSecrets = new List<Secret>
                     {
-                        new("messagesecret".Sha256())
+                        new("basketsecret".Sha256())
                     }
                 },
-                new("ListenerAPI", new[]
+                new("CatalogAPI", new[]
                 {
                     JwtClaimTypes.Id,
                     JwtClaimTypes.Role
@@ -67,11 +67,11 @@ namespace Identity.Application.IdentityServerConfig
                 {
                     Scopes = new List<string>
                     {
-                        "ListenerScope"
+                        "CatalogApi"
                     },
                     ApiSecrets = new List<Secret>
                     {
-                        new("listenersecret".Sha256())
+                        new("catalogsecret".Sha256())
                     }
                 }
             };
@@ -99,8 +99,8 @@ namespace Identity.Application.IdentityServerConfig
             AllowedScopes =
             {
                 StandardScopes.OpenId,
-                "MessageScope",
-                "ListenerScope"
+                "BasketApi",
+                "OrdersApi"
             }
         }
     };

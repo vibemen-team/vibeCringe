@@ -1,17 +1,24 @@
 ﻿using Confluent.Kafka;
 using Kafka.Producers;
+using Message.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace SignalR
 {
+    [Authorize]
     public class StreamHub : Hub
     {
-        private readonly IKafkaProducer<Null, string> _producer;
+        private readonly IKafkaProducer<string, string> _producer;
+        private readonly MessageRepository _repository;
 
-        public StreamHub(IKafkaProducer<Null, string> producer)
+        public StreamHub(IKafkaProducer<string, string> producer, MessageRepository repository)
         {
             _producer = producer;
+            _repository = repository;
         }
         public ChannelReader<int> Counter(
             int count,
@@ -56,6 +63,7 @@ namespace SignalR
             }
         }
 
+
         public async Task UploadStream(ChannelReader<string> stream)
         {
             while (await stream.WaitToReadAsync())
@@ -64,8 +72,27 @@ namespace SignalR
                 {
                     // do something with the stream item
                     //Console.WriteLine(item);
-                    _producer.ProduceAsync(null,item);
+                    //var accessToken = Context.GetHttpContext().Request.Query["access_token"];
+                    var userID = this.Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                    var receiverID = await _repository.GetAnotherUserAsync(userID);
+                    _producer.ProduceAsync(receiverID,item);
                 }
+            }
+        }
+        public struct VideoData
+        {
+            public int Index { get; }
+            public string Part { get; }
+
+
+            [JsonConstructor]
+            public VideoData(int index, string part) => (Index, Part) = (index, part);
+        }
+        public async Task SendVideoData(IAsyncEnumerable<VideoData> videoData)
+        {
+            await foreach (var d in videoData)
+            {
+                await Clients.Others.SendAsync("video-data", d);
             }
         }
 

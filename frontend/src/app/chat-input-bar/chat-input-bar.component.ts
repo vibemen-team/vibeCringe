@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Message, MessageService } from '../messages';
 import * as signalR from '@microsoft/signalr';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-chat-input-bar',
@@ -9,10 +10,10 @@ import * as signalR from '@microsoft/signalr';
   styleUrls: ['./chat-input-bar.component.css'],
   providers: [MessageService],
 })
-export class ChatInputBarComponent {
+export class ChatInputBarComponent implements OnInit {
   messageText: string = '';
 
-  id: number = 1;
+  connection!: signalR.HubConnection;
 
   @Output() addMessageNotify = new EventEmitter();
 
@@ -20,17 +21,35 @@ export class ChatInputBarComponent {
 
   messageServ: MessageService;
 
-  constructor(private mesgServ: MessageService) {
+  constructor(
+    private mesgServ: MessageService,
+    private authService: AuthService
+  ) {
     this.messageServ = mesgServ;
+  }
+  async ngOnInit(): Promise<void> {
+    this.connection = new signalR.HubConnectionBuilder()
+      // DOCKER URL 'https://localhost:7001/chat'
+      // LOCAL URL 'https://localhost:7047/chat'
+      .withUrl('https://localhost:7001/chat', {
+        accessTokenFactory: () => this.authService.token,
+      })
+      .build();
+    await this.connection.start();
+    this.connection.on('Send', (data) => {
+      if ((data as Message).senderId === this.authService.userId)
+        (data as Message).isMine = true;
+      this.mesgServ.addMessage(data as Message);
+    });
   }
 
   async sendMessage(): Promise<void> {
-    this.mesgServ.addMessage(1, this.messageText);
+    let token = localStorage.getItem('token');
+
+    this.connection.send('Send', this.messageText);
+    // this.mesgServ.addMessage(
+    //   new Message(this.authService.userId, this.messageText)
+    // );
     this.messageText = '';
-    const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7047/chat')
-      .build();
-    await hubConnection.start();
-    hubConnection.invoke('Send', this.messageText);
   }
 }

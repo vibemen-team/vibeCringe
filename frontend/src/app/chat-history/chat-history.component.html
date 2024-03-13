@@ -1,7 +1,7 @@
 <ul class="list-group">
-    <div  *ngFor="let message of messages">
+    <div *ngFor="let message of mesgServ.messages">
         <div class="message">
-            {{message.text}}
+            <app-message-item class="history-item" [item]="message"></app-message-item>
         </div>
     </div>
 </ul>
